@@ -1,0 +1,9 @@
+.detailWindow[data-v-339b9852] {
+  width: calc(100vw - 130px);
+  max-width: calc(100vw - 130px) !important;
+  height: calc(100vh - 100px);
+  background-color: white;
+}
+.lead-list[data-v-339b9852] {
+  height: calc(100vh - 100px - 50px - 50px - 50px);
+}

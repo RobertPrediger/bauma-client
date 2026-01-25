@@ -1,0 +1,11 @@
+
+$header_height:     80px;
+$nav_width:         200px;
+$av_grid_height:    400px;
+#topol {
+    min-width:     calc( 100vw - 80px );
+    min-height:    calc( 100vh - 140px );
+}
+#topol > iframe {
+    height:     calc( 100vh - 140px );
+}

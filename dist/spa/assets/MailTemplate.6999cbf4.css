@@ -1,0 +1,19 @@
+
+.editDialog[data-v-970ff4fc] {
+    min-width:     calc( 100vw - 50px );
+    min-height:    calc( 100vh - 50px );
+}
+.activeList[data-v-970ff4fc] {
+    background-color: #DDDDDD;
+}
+
+$header_height:     80px;
+$nav_width:         200px;
+$av_grid_height:    400px;
+.aceWindow {
+    width:     calc( 100vw - 130px );
+    max-width:     calc( 100vw - 130px ) !important;
+    height:    calc( 100vh - 100px );
+    background-color: white;
+}
+

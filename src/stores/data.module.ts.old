@@ -1,0 +1,195 @@
+import { defineStore, storeToRefs } from 'pinia'
+
+import { dataService }              from '../services/data.service';
+import { useSocketStore }           from './socket.module';
+
+import _                            from 'lodash';
+import debug                        from 'debug';
+const log       = debug('app:data.module');
+
+interface IDataState {
+    _data:       unknown[];
+    _pos:        number;
+    _total:      number;
+    _lastRow:    number;
+    _loaded:     boolean;
+    _loading:    boolean;
+    _init:       boolean;
+    _filter:     unknown;
+    
+    _record:     unknown;
+    _deleting:   boolean;
+    _error:      boolean;
+    _param:      unknown;
+}
+
+log( 'create' );
+
+export const Data = function ( stateName: string, collName: string ) {
+    const log         = debug( `app:${stateName}.module` );
+
+    log( 'create', stateName, collName );
+
+    return defineStore( stateName, {
+        state:      () => ({
+            _data:      [],
+            _pos:        0,
+            _total:      0,
+            _lastRow:    0,
+            _loaded:     false,
+            _loading:    false,
+            _init:       false,
+            _filter:     null,
+            
+            _record:     {},
+            _deleting:   false,
+            _error:      false,
+            _param:      {}
+        }),
+
+        getters:    {
+            data:       state => state._data,
+            record:     state => state._record,
+            count:      state => state._data.length
+        },
+
+        actions:    {
+            initStore( { callEvent }: { callEvent?: any } ) {
+                log( 'initStore', this._init );
+                
+                // Only connect socket, when not initialized
+                if (!this._init) {
+                    log( 'register socket' );
+
+                    const socketStore                   = useSocketStore();
+                    const { socket }                    = storeToRefs( socketStore );                
+                                    
+                    socket.value.on( 'data:' + collName, async ( resp: any ) => {
+                        log( 'data:' + collName, resp );
+            
+                        // if error -> return with failure
+                        if (resp.error) {
+                            return this[ `${resp.type}Failure`]( resp );
+                        }
+        
+                        // commit success
+                        this[ `${resp.type}Success` ]( resp );
+        
+                        // if caller did register for callback
+                        if ( _.isFunction(callEvent) )
+                            await callEvent( resp );
+                    });
+                }
+            },
+    
+            async getStore( param: any ) {
+                log( 'getStore', param );
+                
+                function waitForResult() {
+                    return new Promise( (resolve) => {
+    
+                        // start interval                
+                        const interval    = setInterval( () => {
+    
+                            // get condition
+                            if (!this._loading) {
+                                clearInterval( interval );
+                                resolve( true );
+                            }
+                        }, 300 );
+                    }); 
+                }
+    
+                if ( this._loaded && this._param === param )
+                    return { 
+                        data:       this._data,
+                        total:      this._total
+                    };
+    
+                if ( !this._loading ) {
+                    try {
+                        this.loading();
+    
+                        // filter -> master is param, filter could already be set and now we just get 2nd page -> use same filter
+                        const filter        = _.defaults( param && param.filter, this._filter );
+    
+                        // if param.filter -> save it in state
+                        // if (param && param.filter)
+                        //     commit( 'setFilter', param.filter );
+    
+                        const body        = await dataService.getAll( collName, _.defaults( { filter }, param ) );
+        
+                        this.getSuccess( { data: body.data, param } );
+    
+                        return body;
+                    }
+                    catch( error: any ) {
+                        this.getFailure( error );
+                        error.status === 502    && this.$router.push('/login');
+                    }
+                } else {
+                    await waitForResult();
+                    log( 'getStore', 'LOADING!', stateName );
+                    return { 
+                        data:       this._data,
+                        total:      this._total
+                    };
+                }
+            },
+            
+            // just set filter for default search
+            setFilter( filter: any ) {
+                this._filter    = filter;
+            },
+
+            init() {
+                this._init          = true;
+            },
+            loading() {
+                this._loading       = true;
+            },
+
+            getSuccess( body: any ) {
+                this._loading       = false;
+                this._loaded        = true;
+                
+                // mix data inside
+                this._data          = _.unionBy( this._data, body.data || [], '_id' );
+                this._total         = this._data.length;
+                this._param         = body.param;
+            },
+            getFailure( error: any ) {
+                this._loading       = false;
+                this._data          = [];
+                this._error         = error;
+            },
+    
+            // success for add, update and delete
+            addSuccess( elm: any ) {
+                log( 'addSuccess', elm );
+                this._loading       = false;
+            },
+            updateSuccess( resp: any ) {
+                const id          = resp.body._id;
+                
+                // change existing state data
+                const index     = this._data.findIndex( data => data._id === id );
+                if (index > -1) {
+                    this._data.splice( index, 1, resp.body );
+                } else {
+                    this._data.push( resp.body );
+                }
+    
+                this._loading       = false;
+            },
+
+            deleteSuccess( resp: any ) {
+                log( 'deleteSuccess', resp.data );
+                
+                // remove deleted user from state
+                this._data          = this._data.filter( elm => resp.data.value._id !== elm._id );
+                this._loading       = false;
+            },
+        }
+    });
+};

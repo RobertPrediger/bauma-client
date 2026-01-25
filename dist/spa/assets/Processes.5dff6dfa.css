@@ -1,0 +1,16 @@
+.detail[data-v-7b5f04ad] {
+  width: calc(100vw - 200px);
+  max-width: 1920px;
+}
+.edit-page[data-v-7b5f04ad] {
+  height: calc(100vh - 95px - 70px);
+}
+.process-container[data-v-7b5f04ad] {
+  height: calc(100vh - 50px);
+  width: 100%;
+}
+.process[data-v-7b5f04ad] {
+  height: calc(100vh - 80px - 50px);
+  width: 100%;
+  border: 1px solid #E0E0E0;
+}

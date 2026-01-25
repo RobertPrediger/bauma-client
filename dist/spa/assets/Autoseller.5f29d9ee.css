@@ -1,0 +1,15 @@
+
+.form[data-v-b88b3788] {
+    height:    calc( 100vh - 400px - 95px - 70px );
+    width:         100%;
+}
+.scroll-left[data-v-b88b3788] {
+    height:    calc( 100vh - 400px - 100px - 95px - 70px );
+}
+.tab[data-v-b88b3788] {
+    height:    calc( 100vh - 400px - 130px - 95px - 70px );
+}
+.scroll-right[data-v-b88b3788] {
+    height:    calc( 100vh - 400px - 153px - 95px - 70px );
+}
+

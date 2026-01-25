@@ -1,0 +1,4 @@
+@font-face {
+  font-family: "CorporateACon-Reg";
+  src: url(https://dev.lead.node4biz.de/assets/font/corporate-reg.otf) format("opentype");
+}
