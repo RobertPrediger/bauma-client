@@ -4,40 +4,37 @@
 </template>
 
 <script lang="ts" setup>
-import { AgGridVue } from 'ag-grid-vue3';
-import { useI18n } from 'vue-i18n';
-import { extend, some, map, each } from 'lodash';
+import { AgGridVue }                    from 'ag-grid-vue3';
+import { extend, some, map, each }      from 'lodash';
 
-import { useAccountStore } from 'src/stores/account.store';
-import { useDataStore } from 'src/stores/data.store';
-import { useNavSettingsStore } from 'src/stores/navSettings.store';
+import { useAccountStore }              from 'src/stores/account.store';
+import { useDataStore }                 from 'src/stores/data.store';
+import { useNavSettingsStore }          from 'src/stores/navSettings.store';
 
-import debug from 'debug';
-const log = debug('app:grid');
-
-const i18n = useI18n({ useScope: 'global' })
+import debug                            from 'debug';
+const log           = debug('app:grid');
 
 export interface Props {
-    stateName: string,
-    gridName: string,
-    gridOptions: any,
-    state: any,
-    orientation?: string,
-    type?: string,
-    limit?: number
+    stateName:          string,
+    gridName:           string,
+    gridOptions:        any,
+    state:              any,
+    orientation?:       string,
+    type?:              string,
+    limit?:             number,
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    type: 'client',
-    limit: 100
+    type:           'client',
+    limit:          100
 }
 );
 
-const accountStore = useAccountStore();
-const settingsStore = useDataStore(props.gridName, 'settings');
+const accountStore      = useAccountStore();
+const settingsStore     = useDataStore(props.gridName, 'settings');
 
-const { user, lang } = storeToRefs(accountStore);
-const { _data: settings } = storeToRefs(settingsStore);
+const { user, lang }        = storeToRefs(accountStore);
+const { _data: settings }   = storeToRefs(settingsStore);
 
 const emit = defineEmits([
     'subGridReady',
@@ -54,77 +51,74 @@ settingsStore.getStore({ filter: { name: props.gridName } });
 // default grid
 const defaultGrid: any = {
     defaultColDef: {
-        filter: 'agTextColumnFilter',
-        floatingFilter: true,
-        resizable: true,
-        sortable: true,
-        width: 200
+        filter:             'agTextColumnFilter',
+        floatingFilter:     true,
+        resizable:          true,
+        sortable:           true,
+        width:              200
     },
-    components: {},
-    rowSelection: 'single',
-    getRowId: (params: any) => params.data._id,
-    deltaRowDataMode: true,
+    components:         {},
+    rowSelection:       'single',
+    getRowId:           (params: any) => params.data._id,
+    deltaRowDataMode:   true,
     onSelectionChanged: onRowSelect,
-    onGridReady: gridReady,
-    rowData: []
+    onGridReady:        gridReady,
+    rowData:            [],
 };
 
 // server side
 if (props.type === 'server') {
-    defaultGrid.deltaRowDataMode = true;
-    defaultGrid.rowModelType = 'serverSide';
-    defaultGrid.cacheBlockSize = 100;
+    defaultGrid.deltaRowDataMode    = true;
+    defaultGrid.rowModelType        = 'serverSide';
+    defaultGrid.cacheBlockSize      = 100;
 }
 
 // mix grid options with props from outside
-const gridOpt = reactive(extend({}, defaultGrid, props.gridOptions));
+const gridOpt       = reactive( extend( {}, defaultGrid, props.gridOptions ) );
 
 // watch for changes of language
 watch(lang, (newValue, oldValue) => {
-    log('language', oldValue, newValue, gridOpt);
+    log('language', oldValue, newValue, gridOpt );
 
-    this.columnDefs(gridOpt);
+    columnDefs(gridOpt);
 });
 
 // init store -> register updateSuccess for changes from socket
 props.state.initStore({});
 
-// set column labels for grid            
+// set column labels for grid
 function columnDefs(grid: any, colMenu: any = []) {
 
     if (!grid.api)
         return;
 
     // get language and reset labels
-    const lang = i18n.messages.value.de,
-        locMenu = map(colMenu, (item) => {
+    const locMenu = map(colMenu, (item) => {
             return {
                 ...item,
-                headerName: lang.messages[item.headerName] || item.headerName,
                 cellRenderer: item.cellRenderer ? gridOpt.components[item.cellRenderer] : null
             };
         });
 
     // set column definitions
-    grid.api.setColumnDefs(locMenu);
+    grid.api.setGridOption('columnDefs', locMenu);
 
-    // if user is set -> load state                
+    // if user is set -> load state
     if (gridOpt.columnDefs) {
         // set column labels
         const colDefs = map(gridOpt.columnDefs, (item) => {
             return {
                 ...item,
-                headerName: lang.messages[item.headerName] || item.headerName
             };
         });
-        grid.columnApi.applyColumnState(colDefs);
+        grid.api.applyColumnState({ state: colDefs });
     }
 }
 
 // toggle column field
 function toggleField(item: any) {
     log('toggle', item);
-    gridOpt.columnApi.setColumnVisible(item.colId, item.show);
+    gridOpt.api.setColumnVisible(item.colId, item.show);
 }
 
 /**************************************************************************/
@@ -137,17 +131,18 @@ async function saveSettings() {
 
     try {
         // get settings from grid
-        const sett = gridOpt.columnApi.getColumnState(),
-            item = {
-                _id: `${props.gridName}_${user.value.krz}`,
-                columns: sett,
-                admin: some(user.value.rights, right => right === 'admin'),
-                name: props.gridName,
-                user: user.value.krz
+        const
+            sett      = gridOpt.api.getColumnState(),
+            item      = {
+                _id:        `${props.gridName}_${user.value.krz}`,
+                columns:    sett,
+                admin:      some(user.value.rights, right => right === 'admin'),
+                name:       props.gridName,
+                user:       user.value.krz,
             };
 
         // check for hook
-        await emit('beforeSaveSettings', { param: item });
+        emit('beforeSaveSettings', { param: item });
 
         // save settings
         await settingsStore.updateRecord({ record: item });
@@ -163,7 +158,7 @@ async function deleteSettings() {
 
     try {
         // check for hook
-        await emit('beforeDeleteSettings');
+        emit('beforeDeleteSettings');
 
         // delete setting
         await settingsStore.deleteRecord({ record: { _id: `${props.gridName}_${user.value.krz}` } });
@@ -187,9 +182,9 @@ async function listenSelect(rec: any) {
 
     try {
         // hooks beforeSelect
-        await emit('beforeSelect', { param: rec });
+        emit('beforeSelect', { param: rec });
 
-        // get grid and search for node with _id -> if found, select it        
+        // get grid and search for node with _id -> if found, select it
         gridOpt.api.forEachNode((node: any) => {
             if (node.data && rec._id === node.data._id) {
                 log(' ->', node.data);
@@ -211,7 +206,7 @@ async function updateSuccess(resp: any) {
     const row = gridOpt.api.getRowNode(resp.body._id);
     log('rowId', props.state.data, row);
 
-    // server side                    
+    // server side
     if (props.type === 'server') {
         if (row)
             row.setData(resp.body);
@@ -236,7 +231,7 @@ async function updateSuccess(resp: any) {
 async function deleteSuccess(resp: any) {
     log('deleteSuccess', resp, props.state.data);
 
-    // server side                    
+    // server side
     if (props.type === 'server') {
         gridOpt.api.purgeServerSideCache();
         // client side
@@ -251,7 +246,7 @@ async function deleteSuccess(resp: any) {
 
 // row select event in grid
 async function onRowSelect() {
-    log('onRowSelect', props.gridName, props.state);
+    log('onRowSelect', props.gridName, props.state, gridOpt );
 
     const selectedRows = gridOpt.api.getSelectedRows();
     let type;
@@ -279,18 +274,58 @@ async function subGridReady(params: any) {
             async getRows(params: any) {
                 log('getRows', props.gridName, params);
 
-                const sort: any = props.gridOptions.sort || {};
-                for (const item of params.request.sortModel) {
-                    sort[item.colId] = item.sort === 'asc' ? 1 : -1;
+                let sort: any;
+                if (params.request.sortModel && params.request.sortModel.length > 0) {
+                    // User has changed sorting - use only their sort
+                    sort = {};
+                    for (const item of params.request.sortModel) {
+                        sort[item.colId] = item.sort === 'asc' ? 1 : -1;
+                    }
+                } else {
+                    // No user sorting - use default
+                    sort = props.gridOptions.sort || {};
                 }
 
+                // Combine default filters with user filters
+                // Default filters from gridOptions are always active
+                // User filters from filterModel are added/override only if they have actual values
                 const filter: any = {};
-                each(props.gridOptions.filter, (item, key) => {
-                    filter[key] = item;
-                });
-                each(params.request.filterModel, (item, key) => {
-                    filter[key] = item;
-                });
+
+                // First add default filters (if any) - these are always active
+                if (props.gridOptions.filter) {
+                    each(props.gridOptions.filter, (item, key) => {
+                        filter[key] = item;
+                    });
+                }
+
+                // Then add/override with user filters from ag-Grid
+                // Only add filters that have actual values (ag-Grid sometimes sends empty filters)
+                if (params.request.filterModel) {
+                    each(params.request.filterModel, (item, key) => {
+                        // Check if filter has a value
+                        // For text filters, check if item.filter exists and is not empty after trimming
+                        let hasValue = false;
+
+                        if (item) {
+                            if (typeof item.filter === 'string') {
+                                hasValue = item.filter.trim() !== '';
+                            } else if (item.filter !== null && item.filter !== undefined) {
+                                hasValue = true;
+                            }
+                            // Also check for complex filters with operator
+                            if (item.operator && (item.condition1 || item.condition2)) {
+                                hasValue = true;
+                            }
+                        }
+
+                        if (hasValue) {
+                            filter[key] = item;
+                        } else {
+                            // Filter was cleared - remove it from filter object if it exists
+                            delete filter[key];
+                        }
+                    });
+                }
 
                 props.state.getStore({
                     limit: props.limit,
@@ -301,19 +336,22 @@ async function subGridReady(params: any) {
                     .then(
                         (body: any) => {
                             log('success', props.gridName, body);
-                            params.successCallback(body.data, body.lastRow);
+                            params.success({
+                                rowData:    body.data,
+                                rowCount:   body.lastRow
+                            });
                         },
                         (err: any) => {
                             log('Err', props.state, err);
 
-                            params.failCallback();
+                            params.fail();
 
                             Notify.create({
-                                message: err,
-                                color: 'negative',
-                                icon: 'report_problem',
-                                position: 'top-right',
-                                timeout: 5000
+                                message:    err,
+                                color:      'negative',
+                                icon:       'report_problem',
+                                position:   'top-right',
+                                timeout:    5000
                             });
                         }
                     );
@@ -326,13 +364,16 @@ async function subGridReady(params: any) {
 
     // get datasource
     const datasource = ServerSideDatasource();
-    params.api.setServerSideDatasource(datasource);
+    params.api.setGridOption('serverSideDatasource', datasource);
 
 }
 
 // ag-grid is ready
 async function gridReady(params: any) {
     log('gridReady', params);
+
+    // Set the API reference to gridOpt
+    gridOpt.api = params.api;
 
     // get grid settings and load them
     const resp = await axios.get(`/model/settings/${props.gridName}.json`);

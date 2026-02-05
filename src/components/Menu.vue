@@ -11,7 +11,7 @@
                 <q-icon :name="menu.icon" />
             </q-item-section>
             <q-item-section>
-                <q-item-label v-t="`messages.Label${ camelCase(menu.link) }`"></q-item-label>
+                <q-item-label>{{ menu.name }}</q-item-label>
                 <q-item-label caption>{{ menu.sub }}</q-item-label>
             </q-item-section>
         </q-item>
@@ -21,7 +21,7 @@
                 <q-icon :name="menu.icon" />
             </q-item-section>
             <q-item-section>
-                <q-item-label v-t="`messages.Label${ camelCase(menu.link) }`"></q-item-label>
+                <q-item-label>{{ menu.name }}</q-item-label>
                 <q-item-label caption>{{ menu.sub }}</q-item-label>
             </q-item-section>
         </q-item>
@@ -43,7 +43,7 @@ const level         = ref( props.start.split('/').length - 2 );
 function callFunc() {
     if ( this[ props.menu.func ] )
         return this[ props.menu.func ]();
-        
+
     log( 'function not found:', props.menu.func );
 }
 

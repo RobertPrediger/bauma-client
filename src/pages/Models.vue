@@ -1,8 +1,8 @@
 <template>
     <q-page class="q-pa-sm">
 
-        <NavBar :title="$t('messages.LabelModels')" icon="fas fa-border-style" stateName="models" :state="modelStore" />
-        
+        <NavBar :title="messages.LabelModels" icon="fas fa-border-style" stateName="models" :state="modelStore" />
+
         <div class="row q-col-gutter-md">
             <div class="col-6">
                 <q-card>
@@ -15,18 +15,18 @@
                 <q-card>
 
                     <q-card-section>
-                        <div class="text-h6" v-t="'messages.ColModel'"></div>
+                        <div class="text-h6" >Label</div>
                     </q-card-section>
-                    
+
                     <q-separator />
-        
+
                     <q-form @submit="doSave" class="q-gutter-xs" ref="portals">
                         <input type="submit" style="position: absolute; left: -9999px"/>
-        
+
                         <q-card-section>
                             <div class="row">
                                 <div class="col">
-        
+
                                     <q-input name="type" v-model="form.model" lazy-rules dense outlined
                                         :label="$t('messages.ColModel')"
                                         :rules="[ val => !!val || $t('messages.TextRequired')]"
@@ -41,7 +41,7 @@
                                         :label="$t('messages.ColSynonym')"
                                         hint=""
                                         />
-        
+
                                 </div>
                             </div>
                         </q-card-section>
@@ -54,7 +54,7 @@
 
 <script lang="ts" setup>
 import GlobalView                       from '../common/helpers/GlobalView';
-import NavBar                           from '../components/NavBar.vue'; 
+import NavBar                           from '../components/NavBar.vue';
 import Grid                             from '../common/components/Grid.vue';
 
 import _                                from 'lodash';
@@ -62,16 +62,16 @@ import _                                from 'lodash';
 import debug                            from 'debug';
 const log         = debug('app:categories');
 
-const init        = { 
-    collName:       'models', 
+const init        = {
+    collName:       'models',
     stateName:      'models'
 };
 const globalView  = GlobalView( init );
-const { 
-    store:          modelStore, 
-    data:           models, 
+const {
+    store:          modelStore,
+    data:           models,
     doSave,
-    form 
+    form
 }  = globalView;
 
 const modelsGrid              = ref({});

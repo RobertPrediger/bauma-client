@@ -3,15 +3,15 @@
         <q-card>
             <q-card-section>
                 <div class="row">
-                    <div class="text-h4 col">leadlive / Login</div>
+                    <div class="text-h4 col">Gummiketten / Login</div>
                     <div class="col text-right">
                         <img alt="web4biz logo" src="~assets/web4biz.png" class="logo" />
                     </div>
                 </div>
             </q-card-section>
-            
+
             <q-separator />
-            
+
             <q-card-section>
                 <q-form @submit.prevent.stop="doLogin" class="q-gutter-xs">
                     <q-input name="username" v-model="form.username" lazy-rules outlined
@@ -44,11 +44,11 @@ const loading           = ref(false),
             username:         '',
             password:         ''
         });
-        
+
 async function doLogin( evt ) {
     evt.preventDefault();
     loading.value    = true;
-    
+
     const { username, password }        = form;
     if ( username && password ) {
         try {

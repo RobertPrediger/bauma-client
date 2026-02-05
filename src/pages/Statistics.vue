@@ -44,7 +44,7 @@ import {
 }                                       from 'echarts/components';
 import VChart, { THEME_KEY }            from 'vue-echarts';
 
-import moment                           from 'moment';
+import dayjs                            from 'dayjs';
 import _                                from 'lodash';
 
 import debug                            from 'debug';
@@ -94,7 +94,7 @@ const leadPortal         = reactive({
             axisLabel:    {},
             yAxis:        {}
         }),
-        firstDay          = moment().subtract( 15, 'weeks' );
+        firstDay          = dayjs().subtract( 15, 'weeks' );
 
 const { data: portals }     = storeToRefs( portalStore );
 const { data: categories }  = storeToRefs( categoryStore );

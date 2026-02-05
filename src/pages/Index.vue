@@ -7,7 +7,7 @@
                         <img alt="web4biz logo" src="~assets/web4biz.png">
                     </q-card-section>
                     <q-card-section class="text-center">
-                        <h3>LeadLive</h3>
+                        <h3>Gummiketten</h3>
                     </q-card-section>
                 </q-card>
             </div>

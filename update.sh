@@ -1,5 +1,3 @@
-quasar build
-
 git add .
-git commit -m '$1'
-git push
+git commit -m "$2"
+git push origin $1

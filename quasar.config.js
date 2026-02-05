@@ -8,11 +8,16 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
-const { configure } = require('quasar/wrappers');
+import { configure } from 'quasar/wrappers';
+import path from 'path';
 
-const path = require('path')
+const appBase   = {
+    target:         'https://dev.bauma.node4biz.de',
+    changeOrigin:   true,
+    secure:         true,
+};
 
-module.exports = configure(function (/* ctx */) {
+export default configure(function (/* ctx */) {
   return {
     eslint: {
       // fix: true,
@@ -30,7 +35,6 @@ module.exports = configure(function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
-      'i18n',
       'axios',
       'ag-grid',
     ],
@@ -63,7 +67,7 @@ module.exports = configure(function (/* ctx */) {
 
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
-      // vueDevtools,
+      vueDevtools: true,
       // vueOptionsAPI: false,
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
@@ -81,23 +85,12 @@ module.exports = configure(function (/* ctx */) {
       // viteVuePluginOptions: {},
 
       vitePlugins: [
-        ['@intlify/vite-plugin-vue-i18n', {
-          // if you want to use Vue I18n Legacy API, you need to set `compositionOnly: false`
-          // compositionOnly: false,
-
-          // if you want to use named tokens in your Vue I18n messages, such as 'Hello {name}',
-          // you need to set `runtimeOnly: false`
-          // runtimeOnly: false,
-
-          // you need to set i18n resource including paths !
-          include: path.resolve(__dirname, './src/i18n/**')
-        }],
         [
           'unplugin-auto-import/vite',
           {
             // targets to transform
             include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/, /\.md$/],
-          
+
             // global imports to register
             imports: [
               // presets
@@ -105,13 +98,11 @@ module.exports = configure(function (/* ctx */) {
               'vue-router',
               'pinia',
               'quasar',
-              'vue-i18n',
               {
                 axios:              [['default', 'axios']],
                 quasar:             ['Cookies', 'Screen', 'uid', 'extend', 'Notify', 'Loading', 'Dialog'],
                 debug:              ['debug'],
                 pinia:              ['storesToRef'],
-                'vue-i18n':         ['useI18n'],
               },
               {
                 from: 'quasar',
@@ -126,7 +117,7 @@ module.exports = configure(function (/* ctx */) {
             ],
             // Enable auto import by filename for default module exports under directories
             defaultExportByFilename: false,
-          
+
             // Auto import for module exports under directories
             // by default it only scan one level of modules under the directory
             dirs: [
@@ -135,25 +126,25 @@ module.exports = configure(function (/* ctx */) {
               // './composables/**', // all nested modules
               // ...
             ],
-          
+
             // Filepath to generate corresponding .d.ts file.
             // Defaults to './auto-imports.d.ts' when `typescript` is installed locally.
             // Set `false` to disable.
             dts: './auto-imports.d.ts',
-          
+
             // Auto import inside Vue template
             // see https://github.com/unjs/unimport/pull/15 and https://github.com/unjs/unimport/pull/72
             vueTemplate: true,
-          
+
             // Custom resolvers, compatible with `unplugin-vue-components`
             // see https://github.com/antfu/unplugin-auto-import/pull/23/
             resolvers: [
               /* ... */
             ],
-          
+
             // Inject the imports at the end of other imports
             injectAtEnd: true,
-          
+
             // Generate corresponding .eslintrc-auto-import.json file.
             // eslint globals Docs - https://eslint.org/docs/user-guide/configuring/language-options#specifying-globals
             eslintrc: {
@@ -203,41 +194,14 @@ module.exports = configure(function (/* ctx */) {
       port: 5001,
       proxy: {
         '/socket.io': {
-          target: 'https://dev.leadlive.de',
-          changeOrigin: true,
-          secure: true,
-          ws: true,
+            ...appBase,
+            ws: true,
         },
-        '/data': {
-          target: 'https://dev.leadlive.de',
-          changeOrigin: true,
-          secure: true,
-        },
-        '/auth': {
-          target: 'https://dev.leadlive.de',
-          changeOrigin: true,
-          secure: true,
-        },
-        '/model': {
-          target: 'https://dev.leadlive.de',
-          changeOrigin: true,
-          secure: true,
-        },
-        '/custom': {
-          target: 'https://dev.leadlive.de',
-          changeOrigin: true,
-          secure: true,
-        },
-        '/red': {
-          target: 'https://dev.leadlive.de',
-          changeOrigin: true,
-          secure: true,
-        },
-        '/api': {
-          target: 'https://dev.leadlive.de',
-          changeOrigin: true,
-          secure: true,
-        },
+        '/data': appBase,
+        '/auth': appBase,
+        '/model': appBase,
+        '/custom': appBase,
+        '/api': appBase,
       },
     },
 
@@ -352,7 +316,7 @@ module.exports = configure(function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'leadlive'
+        appId: 'bauma'
       }
     },
 
@@ -365,5 +329,5 @@ module.exports = configure(function (/* ctx */) {
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}
     }
-  }
+  };
 })

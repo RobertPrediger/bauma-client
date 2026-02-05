@@ -1,36 +1,25 @@
-import { boot }         from 'quasar/wrappers'
-import { createI18n }   from 'vue-i18n'
+import { boot } from 'quasar/wrappers';
 
-import messages         from 'src/i18n'
+// Simple translation mock function
+// Returns the key as fallback text
+function translate(key: string): string {
+  // Extract the last part of the key path (e.g., "messages.LabelTags" -> "LabelTags")
+  const parts = key.split('.');
+  const lastPart = parts[parts.length - 1];
 
-export type MessageLanguages = keyof typeof messages;
-// Type-define 'en-US' as the master schema for the resource
-export type MessageSchema = typeof messages['de'];
-
-// See https://vue-i18n.intlify.dev/guide/advanced/typescript.html#global-resource-schema-type-definition
-/* eslint-disable @typescript-eslint/no-empty-interface */
-declare module 'vue-i18n' {
-    // define the locale messages schema
-    export interface DefineLocaleMessage extends MessageSchema {}
-
-    // define the datetime format schema
-    export interface DefineDateTimeFormat {}
-
-    // define the number format schema
-    export interface DefineNumberFormat {}
+  // Convert camelCase to readable text
+  // LabelTags -> Label Tags
+  return lastPart.replace(/([A-Z])/g, ' $1').trim();
 }
-/* eslint-enable @typescript-eslint/no-empty-interface */
 
-export default boot( async ({ app }) => {
-    // get translation
-    const { data: messages }        = await axios.get( '/custom/trans', { params: { lang: 'de' } } );
-
-    const i18n = createI18n({
-        locale:             'de',
-        globalInjection:    true,
-        messages
-    })
-
-    // Set i18n instance on app
-    app.use(i18n)
+export default boot(({ app }) => {
+  // Make $t available globally in templates
+  app.config.globalProperties.$t = translate;
 });
+
+// Export for use in setup functions
+export function useI18n() {
+  return {
+    t: translate
+  };
+}

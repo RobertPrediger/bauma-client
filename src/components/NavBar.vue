@@ -3,17 +3,17 @@
 
         <q-icon v-if="icon" :name="icon" style="font-size: 1.6em;"></q-icon>
 
-        <q-toolbar-title v-if="title" v-t="title"></q-toolbar-title>
+        <q-toolbar-title v-if="title">{{ title }}</q-toolbar-title>
 
         <div v-if="locButtons">
-            <q-btn v-for="item of locButtons" :key="item.link" :label="$t(`messages.${item.label}`)"
+            <q-btn v-for="item of locButtons" :key="item.link" :label="item.label"
                 :icon="item.icon || 'apps'" color="white" text-color="black" @click="clickButton(item.link)" dense
                 :disabled="!status.save" />
         </div>
 
         <q-separator v-if="locButtons && locButtons.length > 0" spaced vertical />
 
-        <q-btn-dropdown v-if="func.length > 0" :label="$t('messages.LabelFuncs')" icon="apps" color="white"
+        <q-btn-dropdown v-if="func.length > 0" label="LabelFuncs" icon="apps" color="white"
             text-color="black" dense>
             <q-list>
                 <q-item @click="callFunc(item)" clickable v-close-popup v-for="(item, index) of func" :key="index">
@@ -21,7 +21,7 @@
                         <q-icon :name="item.icon" />
                     </q-item-section>
                     <q-item-section>
-                        <q-item-label>{{ $t(`messages.${item.name}`) }}</q-item-label>
+                        <q-item-label>{{ item.name }}</q-item-label>
                     </q-item-section>
                 </q-item>
             </q-list>
@@ -29,7 +29,7 @@
 
         <q-separator v-if="func.length > 0" spaced vertical />
 
-        <q-btn-dropdown v-if="print.length > 0" :label="$t('messages.LabelPrint')" icon="print" color="white"
+        <q-btn-dropdown v-if="print.length > 0" label="LabelPrint" icon="print" color="white"
             text-color="black" dense>
             <q-list>
                 <q-item clickable v-close-popup @click="callFunc(item)" v-for="(item, index) of print" :key="index">
@@ -37,7 +37,7 @@
                         <q-icon :name="item.icon" />
                     </q-item-section>
                     <q-item-section>
-                        <q-item-label>{{ $t(`messages.${item.name}`) }}</q-item-label>
+                        <q-item-label>{{ item.name }}</q-item-label>
                     </q-item-section>
                 </q-item>
             </q-list>
@@ -47,15 +47,15 @@
 
         <q-btn no-caps size="md" color="white" text-color="black" :disabled="!status.add" @click="doAdd()"
             icon="add_box" v-if="show.add && navshow?.add !== false" dense>
-            <q-tooltip>{{ $t('messages.ButtonAdd') }}</q-tooltip>
+            <q-tooltip>Neu</q-tooltip>
         </q-btn>
         <q-btn no-caps size="md" color="white" text-color="black" :disabled="!status.save" @click="doSave()"
             icon="save_alt" v-if="show.save && navshow?.save !== false" dense>
-            <q-tooltip>{{ $t('messages.ButtonSave') }}</q-tooltip>
+            <q-tooltip>Speichern</q-tooltip>
         </q-btn>
         <q-btn no-caps size="md" color="white" text-color="black" :disabled="!status.remove" @click="doDelete()"
             icon="delete" v-if="show.remove && navshow?.remove !== false" dense>
-            <q-tooltip>{{ $t('messages.ButtonDelete') }}</q-tooltip>
+            <q-tooltip>Löschen</q-tooltip>
         </q-btn>
 
         <q-separator spaced vertical />
@@ -63,16 +63,16 @@
         <q-btn-dropdown v-model="showGridMenu" color="white" text-color="black" :disabled="!status.settings"
             icon="settings" v-if="show.settings" dense>
             <q-list>
-                <q-item-label header>{{ $t('messages.GridSetting') }}</q-item-label>
+                <q-item-label header>Grid Einstellungen</q-item-label>
 
                 <q-item dense>
                     <q-item-section side>
                         <div class="text-grey-8 q-gutter-xs">
                             <q-btn clickable @click="saveSett()" icon="save_alt">
-                                <q-tooltip>{{ $t('messages.ButtonSave') }}</q-tooltip>
+                                <q-tooltip>Speichern</q-tooltip>
                             </q-btn>
                             <q-btn clickable @click="deleteSett()" icon="delete_forever">
-                                <q-tooltip>{{ $t('messages.ButtonReset') }}</q-tooltip>
+                                <q-tooltip>Zurücksetzen</q-tooltip>
                             </q-btn>
                         </div>
                     </q-item-section>
@@ -82,7 +82,7 @@
 
                 <q-item clickable v-for="sett in status.setting" :key="sett.field" dense>
                     <q-item-section>
-                        <q-toggle :label="$t(`messages.${sett.headerName}`)" color="green" v-model="sett.show"
+                        <q-toggle :label="sett.headerName" color="green" v-model="sett.show"
                             @input="toggleField(sett.field, sett.show)" />
                     </q-item-section>
                 </q-item>
@@ -91,40 +91,40 @@
 
         <q-btn no-caps size="md" color="white" text-color="black" @click="doClose()" icon="close" v-if="show.close"
             dense>
-            <q-tooltip>{{ $t('messages.ButtonClose') }}</q-tooltip>
+            <q-tooltip>Schließen</q-tooltip>
         </q-btn>
 
     </q-toolbar>
 </template>
 
 <script lang="ts" setup>
-import qs from 'qs';
+import qs                   from 'qs';
 
-import _ from 'lodash';
+import { filter, find, isArray, uniqueId, keyBy, map } from 'lodash';
 
-import { useNavSettingsStore } from '../stores/navSettings.store';
+import { useNavSettingsStore }          from '../stores/navSettings.store';
 
-import debug from 'debug';
-const log = debug('app:navbar');
+import debug                            from 'debug';
+const log                   = debug('app:navbar');
 
 export interface Props {
-    title: string,
-    state: any,
-    stateName: string,
-    globalView?: any,
-    funcs?: any,
-    type?: string,
-    icon?: string,
-    navshow?: any,
-    navclass?: any,
-    locButtons?: any,
+    title:          string,
+    state:          any,
+    stateName:      string,
+    globalView?:    any,
+    funcs?:         any,
+    type?:          string,
+    icon?:          string,
+    navshow?:       any,
+    navclass?:      any,
+    locButtons?:    any,
 }
 
 const props = withDefaults(defineProps<Props>(), {
     navshow: {
-        add: true,
-        save: true,
-        remove: true
+        add:        true,
+        save:       true,
+        remove:     true
     },
 }
 );
@@ -134,42 +134,43 @@ const emit = defineEmits([
     'clickButton',
 ]);
 
-const navStore = useNavSettingsStore(_.uniqueId(props.stateName));
-const { status, setting } = storeToRefs(navStore);
+const navStore              = useNavSettingsStore(uniqueId(props.stateName));
+
+const { status, setting }   = storeToRefs(navStore);
 
 log('start', props.stateName, navStore);
 
 const showGridMenu = ref(false),
     show = reactive({
-        add: true,
-        save: true,
-        remove: true,
-        close: false,
-        settings: true
+        add:        true,
+        save:       true,
+        remove:     true,
+        close:      false,
+        settings:   true
     });
 
 if (!props.stateName) {
-    show.add = false;
-    show.save = false;
-    show.remove = false;
+    show.add        = false;
+    show.save       = false;
+    show.remove     = false;
 } else
     switch (props.type) {
 
         case 'window':
             navStore.initStatus({
-                save: false,
+                save:           false,
             });
-            show.save = false;
+            show.save       = false;
             break;
 
         case 'dialog':
             navStore.initStatus({
-                save: true,
-                remove: true
+                save:           true,
+                remove:         true
             });
-            show.add = false;
-            show.settings = false;
-            show.close = true;
+            show.add        = false;
+            show.settings   = false;
+            show.close      = true;
             break;
 
         default:
@@ -178,10 +179,10 @@ if (!props.stateName) {
     }
 
 // functions for different buttons
-const print = _.filter(props.funcs, item => item.group === 'print'),
-    func = _.filter(props.funcs, item => item.group === 'functions'),
-    buttons = _.filter(props.funcs, item => item.group === 'buttons'),
-    close = _.find(props.funcs, item => item.group === 'close');
+const print     = filter(props.funcs,   item => item.group === 'print'),
+    func        = filter(props.funcs,   item => item.group === 'functions'),
+    buttons     = filter(props.funcs,   item => item.group === 'buttons'),
+    close       = find(props.funcs,     item => item.group === 'close');
 
 // remember actState to know what has been the last action
 let actState = '';
@@ -268,13 +269,13 @@ function doSelect(record: any) {
     // if record has _id -> select
     if (record._id) {
         navStore.setStatus({
-            add: actState !== 'ADD',
-            save: true,
-            remove: true
+            add:        actState !== 'ADD',
+            save:       true,
+            remove:     true
         });
         actState = 'SELECT';
 
-        if (_.isArray(props.locButtons)) {
+        if (isArray(props.locButtons)) {
             for (const item of props.locButtons) {
                 if (item.select)
                     item.enabled = true;
@@ -283,9 +284,9 @@ function doSelect(record: any) {
         // ... otherwise -> delete
     } else {
         navStore.setStatus({
-            add: true,
-            save: false,
-            remove: false
+            add:           true,
+            save:          false,
+            remove:        false
         });
     }
 }
@@ -298,12 +299,12 @@ function doClose() {
 // settings for grid
 function setSetting(setting: any) {
 
-    const columns = _.keyBy(setting.columns, 'colId'),
-        colMenu = _.filter(setting.colMenu, (item) => { return !item.hideCol; });
+    const columns = keyBy(setting.columns, 'colId'),
+        colMenu = filter(setting.colMenu, (item) => { return !item.hideCol; });
 
     log('setSetting', columns, colMenu);
 
-    navStore.setSetting(_.map(colMenu, (item) => {
+    navStore.setSetting(map(colMenu, (item) => {
         item.show = columns[item.field] ? !columns[item.field].hide : !item.hide;
         return item;
     }));
@@ -329,13 +330,13 @@ async function deleteSett() {
 //     EventBus.$emit( 'toggleField:' + dynNav, { colId, show } );
 // }
 
-// click function button 
+// click function button
 function clickButton(link: string) {
     log('clickButton', link);
     emit('clickButton', link);
 }
 
-// get 
+// get
 // const navBarSubMenu     = computed( async () => {
 //     // get user rights
 //     const rights          = await axios.get( `/model/rights/${props.stateName}.json` );
@@ -350,8 +351,12 @@ onMounted(() => {
     log('mounted', props.state);
 
     // add events
-    props.state.registerAction({ action: 'setRecord', target: 'NavBar', func: doSelect });
-    props.state.registerAction({ action: 'setSetting', target: 'NavBar', func: setSetting });
+    if (props.state && props.state.registerAction) {
+        props.state.registerAction({ action: 'setRecord', target: 'NavBar', func: doSelect });
+        props.state.registerAction({ action: 'setSetting', target: 'NavBar', func: setSetting });
+    } else {
+        console.warn('NavBar: state or registerAction is undefined', props.state);
+    }
 });
 
 // before unmount

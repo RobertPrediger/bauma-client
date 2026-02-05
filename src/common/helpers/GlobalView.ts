@@ -3,12 +3,12 @@ import qs                               from 'qs';
 import { useAccountStore }              from 'src/stores/account.store';
 import { useDataStore }                 from 'src/stores/data.store';
 
-import _                                from 'lodash';
+import { uniqueId, extend }                     from 'lodash';
 
 import debug                            from 'debug';
 const log         = debug('app:globalView');
 
-export default function globalView( { collName, stateName, defaultForm = {} }: { collName: string, stateName: string, defaultform?: any } ) {
+export default function globalView( { collName, stateName, defaultForm = {} }: { collName: string, stateName: string, defaultForm?: any } ) {
 
     log( 'new instance normal', stateName, collName );
 
@@ -17,9 +17,9 @@ export default function globalView( { collName, stateName, defaultForm = {} }: {
 
     // get user
     const { user }     = useAccountStore();
-    
+
     // get store
-    const store         = useDataStore( _.uniqueId( stateName ), collName );
+    const store         = useDataStore( uniqueId( stateName ), collName );
 
     // get data from store
     const { _data: data }       = store;
@@ -32,7 +32,10 @@ export default function globalView( { collName, stateName, defaultForm = {} }: {
         log( 'setRecord', stateName, record );
         await store.dispatchAction( { action: 'beforeSelect', param: record } );
 
-        form.value         = record;
+        form.value         = {
+            ...defaultForm,
+            ...record,
+        }
 
         await store.dispatchAction( { action: 'afterSelect', param: form.value } );
     }
@@ -47,7 +50,7 @@ export default function globalView( { collName, stateName, defaultForm = {} }: {
 
             const result    = await store.addRecord( { record: form.value } );
             form.value      = result;
-            
+
             await store.dispatchAction( { action: 'afterAdd', param: form.value } );
         }
         catch( error ) {
@@ -91,19 +94,19 @@ export default function globalView( { collName, stateName, defaultForm = {} }: {
     // call function
     async function callFunc( item: any ) {
         log( 'callFunc', item );
-        
+
         switch( item.group ) {
             case 'print':
                 log( 'print', item );
-                
+
                 // let filter      = this[ def.gridName ].api.getFilterModel();
                 const filter      = {};
                 log( 'filter', filter );
-                
+
                 if (item.click)
                     [ item.click ]();
                 else
-                    window.open( `/print/${item.link}?` + qs.stringify( { filter } ), 'blank', 'width=800,height=600,resizable=yes,scrollbars=auto,status=yes');  
+                    window.open( `/print/${item.link}?` + qs.stringify( { filter } ), 'blank', 'width=800,height=600,resizable=yes,scrollbars=auto,status=yes');
                 break;
 
             case 'functions':

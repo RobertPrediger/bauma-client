@@ -19,20 +19,20 @@ export const useSocketStore     = defineStore( 'socket', {
     actions: {
         async init() {
             log( 'init' );
-    
+
             try {
-                const socket        = io( '/lead', {
+                const socket        = io( '/bauma', {
                         transports:         [ 'polling', 'websocket' ]
                     } );
                 this._socket        = socket;
-    
+
                 socket.on( 'connect', () => {
                     log( 'CONNECT' );
                 });
                 socket.on( 'disconnect', () => {
                     log( 'DISCONNECT' );
                 });
-    
+
                 log( 'after init', socket );
             }
             catch(error) {

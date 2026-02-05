@@ -33,7 +33,7 @@ configStore.getStore();
 watch( config, ( value ) => {
     log( 'config changed', value[0].name );
     useMeta({
-        title:      value[0] ? `leadlive - ${value[0].name}` : 'leadlive',
+        title:      value[0] ? `Gummiketten - ${value[0].name}` : 'Gummiketten',
     });
 });
 
@@ -42,7 +42,7 @@ watch( config, ( value ) => {
 <style lang="scss">
 
 .body {
-    background-color:    #eceff1;    
+    background-color:    #eceff1;
 }
 .body-login {
     background: radial-gradient(circle, #35a2ff 0%, #014a88 100%);
