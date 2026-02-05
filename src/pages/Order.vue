@@ -201,7 +201,7 @@ import _                                from 'lodash';
 
 import GlobalView                       from '../common/helpers/GlobalView';
 import Status                           from '../common/helpers/status';
-import Send                             from '../common/helpers/Send';
+import Send                             from '../common/helpers/send';
 import NavBar                           from '../components/NavBar.vue';
 import Grid                             from '../common/components/Grid.vue';
 import GridLinkbox                      from '../components/GridLinkbox';

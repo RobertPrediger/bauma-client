@@ -1,42 +1,34 @@
-name: Deploy to Staging Server
+name: Gummiketten
 
 on:
-  push:
-    branches:
-      - main
+    pull_request:
+        branches:
+            - main
+            - live
 
 jobs:
-  build-deploy:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@master
-        with:
-          persist-credentials: false
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
 
-      - name: Install 🔧
-        run: yarn install
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "22"
+                  cache: "yarn"
 
-      - name: Build 🏗️
-        run: yarn build
-        env:
-          NODE_ENV: production
+            # Wenn du Yarn 1 benutzt, reicht das:
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile
 
-      - name: Deploy to Staging Server
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          ARGS: "-rlgoDzvc -i"
-          SOURCE: "dist/"
-          REMOTE_HOST: "lead.leadlive.de"
-          REMOTE_USER: "nodeapps"
-          TARGET: "/opt/lead/test/client"
-          EXCLUDE: "/dist/, /node_modules/"
-          SCRIPT_BEFORE: |
-            whoami
-            ls -al
-          SCRIPT_AFTER: |
-            whoami
-            ls -al
-            echo $RSYNC_STDOUT
+            - name: Build Quasar SPA
+              run: yarn build # ruft dein "build"-Script in package.json auf
+
+            - name: Upload dist as artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: quasar-spa-dist
+                  path: dist/spa
