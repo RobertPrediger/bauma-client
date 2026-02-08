@@ -233,7 +233,7 @@ async function deleteSuccess(resp: any) {
 
     // server side
     if (props.type === 'server') {
-        gridOpt.api.purgeServerSideCache();
+        gridOpt.api.refreshServerSide({ purge: true });
         // client side
     } else {
         gridOpt.api.setRowData(props.state.data);

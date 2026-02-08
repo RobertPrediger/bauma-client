@@ -3,7 +3,7 @@ import qs                               from 'qs';
 import { useAccountStore }              from 'src/stores/account.store';
 import { useDataStore }                 from 'src/stores/data.store';
 
-import { uniqueId, extend }                     from 'lodash';
+import { uniqueId, extend, merge, cloneDeep }   from 'lodash';
 
 import debug                            from 'debug';
 const log         = debug('app:globalView');
@@ -13,7 +13,7 @@ export default function globalView( { collName, stateName, defaultForm = {} }: {
     log( 'new instance normal', stateName, collName );
 
     // default form
-    const form         = ref( defaultForm );
+    const form         = ref( cloneDeep( defaultForm ) );
 
     // get user
     const { user }     = useAccountStore();
@@ -30,12 +30,13 @@ export default function globalView( { collName, stateName, defaultForm = {} }: {
     // set record
     async function setRecord( record: any ) {
         log( 'setRecord', stateName, record );
+        log( 'setRecord customer', record?.customer );
         await store.dispatchAction( { action: 'beforeSelect', param: record } );
 
-        form.value         = {
-            ...defaultForm,
-            ...record,
-        }
+        // Force new object for Vue reactivity
+        const merged       = merge( cloneDeep( defaultForm ), record );
+        log( 'merged customer.number', merged?.customer?.number );
+        form.value         = JSON.parse( JSON.stringify( merged ) );
 
         await store.dispatchAction( { action: 'afterSelect', param: form.value } );
     }
@@ -44,7 +45,7 @@ export default function globalView( { collName, stateName, defaultForm = {} }: {
     async function doAdd() {
         log( 'doAdd', stateName );
         try {
-            form.value     = { ...defaultForm };
+            form.value     = cloneDeep( defaultForm );
 
             await store.dispatchAction( { action: 'beforeAdd', param: form.value } );
 
@@ -54,7 +55,7 @@ export default function globalView( { collName, stateName, defaultForm = {} }: {
             await store.dispatchAction( { action: 'afterAdd', param: form.value } );
         }
         catch( error ) {
-            form.value     = { ...defaultForm };
+            form.value     = cloneDeep( defaultForm );
         }
     }
 
@@ -82,12 +83,12 @@ export default function globalView( { collName, stateName, defaultForm = {} }: {
             await store.dispatchAction( { action: 'beforeDelete', param: form.value } );
 
             await store.deleteRecord( { record: form.value } );
-            form.value     = { ...defaultForm };
+            form.value     = cloneDeep( defaultForm );
 
             await store.dispatchAction( { action: 'afterDelete', param: form.value } );
         }
         catch( error ) {
-            form.value     = { ...defaultForm };
+            form.value     = cloneDeep( defaultForm );
         }
     }
 

@@ -106,15 +106,12 @@
                                                         <q-input name="customer_firstname" v-model="form.customer.firstName" lazy-rules dense outlined bg-color="white"
                                                             label="Vorname"
                                                         />
-
                                                         <q-input name="customer_surname" v-model="form.customer.surname" lazy-rules dense outlined bg-color="white"
                                                             label="Nachname"
                                                         />
-
                                                         <q-input name="customer_firm" v-model="form.customer.firm" lazy-rules dense outlined bg-color="white"
                                                             label="Firma"
                                                         />
-
                                                         <q-input name="customer_mail" v-model="form.customer.mail" lazy-rules dense outlined bg-color="white"
                                                             label="E-Mail"
                                                         />
@@ -135,19 +132,15 @@
                                                                 />
                                                             </div>
                                                         </div>
-
                                                         <q-input name="customer_postcode" v-model="form.customer.postcode" lazy-rules dense outlined bg-color="white"
                                                             label="PLZ"
                                                         />
-
                                                         <q-input name="customer_city" v-model="form.customer.city" lazy-rules dense outlined bg-color="white"
                                                             label="Ort"
                                                         />
-
                                                         <q-input name="customer_country" v-model="form.customer.country" lazy-rules dense outlined bg-color="white"
                                                             label="Land"
                                                         />
-
                                                         <q-input name="customer_tel" v-model="form.customer.tel" lazy-rules dense outlined bg-color="white"
                                                             label="Telefon"
                                                         />
@@ -167,15 +160,12 @@
                                                         <q-input name="deliver_salutation" v-model="form.customer.deliver.salutation" lazy-rules dense outlined bg-color="white"
                                                             label="Anrede"
                                                         />
-
                                                         <q-input name="deliver_firstname" v-model="form.customer.deliver.firstName" lazy-rules dense outlined bg-color="white"
                                                             label="Vorname"
                                                         />
-
                                                         <q-input name="deliver_surname" v-model="form.customer.deliver.surname" lazy-rules dense outlined bg-color="white"
                                                             label="Nachname"
                                                         />
-
                                                         <q-input name="deliver_firm" v-model="form.customer.deliver.firm" lazy-rules dense outlined bg-color="white"
                                                             label="Firma"
                                                         />
@@ -193,23 +183,18 @@
                                                                 />
                                                             </div>
                                                         </div>
-
                                                         <q-input name="deliver_postcode" v-model="form.customer.deliver.postcode" lazy-rules dense outlined bg-color="white"
                                                             label="PLZ"
                                                         />
-
                                                         <q-input name="deliver_city" v-model="form.customer.deliver.city" lazy-rules dense outlined bg-color="white"
                                                             label="Ort"
                                                         />
-
                                                         <q-input name="deliver_country" v-model="form.customer.deliver.country" lazy-rules dense outlined bg-color="white"
                                                             label="Land"
                                                         />
-
                                                         <q-input name="deliver_tel" v-model="form.customer.deliver.tel" lazy-rules dense outlined bg-color="white"
                                                             label="Telefon"
                                                         />
-
                                                         <q-input name="payment_method" v-model="form.orderpayment.method" lazy-rules dense outlined bg-color="white"
                                                             label="Zahlungsart"
                                                         />
@@ -540,6 +525,12 @@ async function afterSelect( record: any ) {
     return record;
 }
 
+// after delete hook
+async function afterDelete() {
+    log( 'hook afterDelete' );
+    showForm.value   = false;
+}
+
 // hide dialog
 function onFormHide() {
     showForm.value   = false;
@@ -723,6 +714,7 @@ onMounted( async () => {
 
     // await actions.registerAction( { action: 'beforeSelect', target: 'Order', func: beforeSelect } );
     await orderStore.registerAction( { action: 'afterSelect', target: 'Order', func: afterSelect } );
+    await orderStore.registerAction( { action: 'afterDelete', target: 'Order', func: afterDelete } );
 
     showGrid.value       = true;
 });
