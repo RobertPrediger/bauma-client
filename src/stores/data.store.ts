@@ -180,15 +180,15 @@ export function useDataStore( stateName: string, collName: string ): any {
                 this._loading       = false;
             },
             updateSuccess( resp: any ) {
-                log( 'updateSuccess', resp.body )
-                const id          = resp.body._id;
+                log( 'updateSuccess', resp )
+                const id          = resp.data._id;
 
                 // change existing state data
                 const index     = this._data.findIndex( data => data._id === id );
                 if (index > -1) {
-                    this._data.splice( index, 1, resp.body );
+                    this._data.splice( index, 1, resp.data );
                 } else {
-                    this._data.push( resp.body );
+                    this._data.push( resp.data );
                 }
 
                 this._loading       = false;

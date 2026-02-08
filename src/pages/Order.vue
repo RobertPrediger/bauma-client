@@ -26,133 +26,248 @@
 
                             <q-card-section>
                                 <div class="row q-col-gutter-md">
-                                    <div class="col-4">
-                                        <div class="text-h6">Auftrag</div>
+                                    <div class="col-3">
+                                        <div class="row q-col-gutter-sm">
+                                            <div class="col-12">
+                                                <div class="text-h6">Auftrag</div>
 
-                                        <q-input name="auftragsnummer" v-model.number="form.Auftragsnummer" lazy-rules dense outlined bg-color="white"
-                                            label="Auftragsnummer"
-                                            type="number"
-                                            hint=""
-                                        />
+                                                <q-input name="auftragsnummer" v-model.number="form.Auftragsnummer" lazy-rules dense outlined bg-color="white"
+                                                    label="Auftragsnummer"
+                                                    type="number"
+                                                />
 
-                                        <q-input name="auftragsdatum" v-model="form.Auftragsdatum" lazy-rules dense outlined bg-color="white"
-                                            label="Auftragsdatum"
-                                            hint=""
-                                        />
+                                                <q-input name="ordernumber" v-model="form.orderdata.ordernumber" lazy-rules dense outlined bg-color="white"
+                                                    label="Auftrag beim Kunden"
+                                                />
+                                                <q-input name="kundennr" v-model="form.customer.number" lazy-rules dense outlined bg-color="white"
+                                                    label="Kundennummer"
+                                                />
 
-                                        <q-input name="status" v-model="form.Status" lazy-rules dense outlined bg-color="white"
-                                            label="Status"
-                                            hint=""
-                                        />
+                                                <q-input name="auftragsdatum" v-model="form.Auftragsdatum" lazy-rules dense outlined bg-color="white"
+                                                    label="Auftragsdatum"
+                                                />
 
-                                        <q-input name="kundennr" v-model="form.customer.number" lazy-rules dense outlined bg-color="white"
-                                            label="Kundennummer"
-                                            hint=""
-                                        />
+                                                <q-input name="status" v-model="form.Status" lazy-rules dense outlined bg-color="white"
+                                                    label="Status"
+                                                />
 
-                                        <q-input name="brutto" v-model.number="form.Brutto" lazy-rules dense outlined bg-color="white"
-                                            label="Brutto"
-                                            type="number"
-                                            hint=""
-                                        />
+                                            </div>
+                                        </div>
 
-                                        <q-input name="currency" v-model="form.Currency" lazy-rules dense outlined bg-color="white"
-                                            label="Währung"
-                                            hint=""
-                                        />
+                                        <q-separator class="q-my-md" />
+
+                                        <div class="row q-col-gutter-sm q-mt-md">
+                                            <div class="col-12">
+                                                <div class="text-h6">Typ</div>
+
+                                                <q-input name="brutto" v-model.number="form.orderdata.maker" lazy-rules dense outlined bg-color="white"
+                                                    label="Hersteller"
+                                                />
+                                                <q-input name="netto" v-model.number="form.orderdata.type" lazy-rules dense outlined bg-color="white"
+                                                    label="Typ"
+                                                />
+                                                <q-input name="currency" v-model="form.orderdata.size" lazy-rules dense outlined bg-color="white"
+                                                    label="Größe"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <q-separator class="q-my-md" />
+
+                                        <div class="row q-col-gutter-sm q-mt-md">
+                                            <div class="col-12">
+                                                <div class="text-h6">Preis</div>
+
+                                                <q-input name="brutto" v-model.number="form.orderdata.price.gross" lazy-rules dense outlined bg-color="white"
+                                                    label="Brutto"
+                                                    type="number"
+                                                />
+                                                <q-input name="netto" v-model.number="form.orderdata.price.net" lazy-rules dense outlined bg-color="white"
+                                                    label="Netto"
+                                                    type="number"
+                                                />
+
+                                                <q-input name="currency" v-model="form.Currency" lazy-rules dense outlined bg-color="white"
+                                                    label="Währung"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="col-4">
-                                        <div class="text-h6">Kunde</div>
+                                    <div class="col-6">
+                                        <div class="row q-col-gutter-sm">
+                                            <div class="col-12">
+                                                <div class="text-h6">Kunde</div>
+                                                <div class="row q-col-gutter-sm">
+                                                    <div class="col-6">
+                                                        <q-input name="customer_salutation" v-model="form.customer.salutation" lazy-rules dense outlined bg-color="white"
+                                                            label="Anrede"
+                                                        />
+                                                        <q-input name="customer_firstname" v-model="form.customer.firstName" lazy-rules dense outlined bg-color="white"
+                                                            label="Vorname"
+                                                        />
 
-                                        <q-input name="customer_firstname" v-model="form.customer.firstName" lazy-rules dense outlined bg-color="white"
-                                            label="Vorname"
-                                            hint=""
-                                        />
+                                                        <q-input name="customer_surname" v-model="form.customer.surname" lazy-rules dense outlined bg-color="white"
+                                                            label="Nachname"
+                                                        />
 
-                                        <q-input name="customer_surname" v-model="form.customer.surname" lazy-rules dense outlined bg-color="white"
-                                            label="Nachname"
-                                            hint=""
-                                        />
+                                                        <q-input name="customer_firm" v-model="form.customer.firm" lazy-rules dense outlined bg-color="white"
+                                                            label="Firma"
+                                                        />
 
-                                        <q-input name="customer_firm" v-model="form.customer.firm" lazy-rules dense outlined bg-color="white"
-                                            label="Firma"
-                                            hint=""
-                                        />
+                                                        <q-input name="customer_mail" v-model="form.customer.mail" lazy-rules dense outlined bg-color="white"
+                                                            label="E-Mail"
+                                                        />
+                                                        <q-input name="customer_vatidbuyer" v-model="form.customer.vatidbuyer" lazy-rules dense outlined bg-color="white"
+                                                            label="USt-IdNr."
+                                                        />
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="row q-col-gutter-xs">
+                                                            <div class="col-8">
+                                                                <q-input name="customer_street" v-model="form.customer.street" lazy-rules dense outlined bg-color="white"
+                                                                    label="Straße"
+                                                                />
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <q-input name="customer_streetnumber" v-model="form.customer.streetNumber" lazy-rules dense outlined bg-color="white"
+                                                                    label="Nr."
+                                                                />
+                                                            </div>
+                                                        </div>
 
-                                        <q-input name="customer_street" v-model="form.customer.street" lazy-rules dense outlined bg-color="white"
-                                            label="Straße"
-                                            hint=""
-                                        />
+                                                        <q-input name="customer_postcode" v-model="form.customer.postcode" lazy-rules dense outlined bg-color="white"
+                                                            label="PLZ"
+                                                        />
 
-                                        <q-input name="customer_postcode" v-model="form.customer.postcode" lazy-rules dense outlined bg-color="white"
-                                            label="PLZ"
-                                            hint=""
-                                        />
+                                                        <q-input name="customer_city" v-model="form.customer.city" lazy-rules dense outlined bg-color="white"
+                                                            label="Ort"
+                                                        />
 
-                                        <q-input name="customer_city" v-model="form.customer.city" lazy-rules dense outlined bg-color="white"
-                                            label="Ort"
-                                            hint=""
-                                        />
+                                                        <q-input name="customer_country" v-model="form.customer.country" lazy-rules dense outlined bg-color="white"
+                                                            label="Land"
+                                                        />
 
-                                        <q-input name="customer_country" v-model="form.customer.country" lazy-rules dense outlined bg-color="white"
-                                            label="Land"
-                                            hint=""
-                                        />
+                                                        <q-input name="customer_tel" v-model="form.customer.tel" lazy-rules dense outlined bg-color="white"
+                                                            label="Telefon"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                        <q-input name="customer_tel" v-model="form.customer.tel" lazy-rules dense outlined bg-color="white"
-                                            label="Telefon"
-                                            hint=""
-                                        />
+                                        <q-separator class="q-my-md" />
 
-                                        <q-input name="customer_mail" v-model="form.customer.mail" lazy-rules dense outlined bg-color="white"
-                                            label="E-Mail"
-                                            hint=""
-                                        />
+                                        <div class="row q-col-gutter-sm q-mt-md">
+                                            <div class="col-12">
+                                                <div class="text-h6">Adresse</div>
+                                                <div class="row q-col-gutter-sm">
+
+                                                    <div class="col-6">
+                                                        <q-input name="deliver_salutation" v-model="form.customer.deliver.salutation" lazy-rules dense outlined bg-color="white"
+                                                            label="Anrede"
+                                                        />
+
+                                                        <q-input name="deliver_firstname" v-model="form.customer.deliver.firstName" lazy-rules dense outlined bg-color="white"
+                                                            label="Vorname"
+                                                        />
+
+                                                        <q-input name="deliver_surname" v-model="form.customer.deliver.surname" lazy-rules dense outlined bg-color="white"
+                                                            label="Nachname"
+                                                        />
+
+                                                        <q-input name="deliver_firm" v-model="form.customer.deliver.firm" lazy-rules dense outlined bg-color="white"
+                                                            label="Firma"
+                                                        />
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="row q-col-gutter-xs">
+                                                            <div class="col-8">
+                                                                <q-input name="deliver_street" v-model="form.customer.deliver.street" lazy-rules dense outlined bg-color="white"
+                                                                    label="Straße"
+                                                                />
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <q-input name="deliver_streetnumber" v-model="form.customer.deliver.streetNumber" lazy-rules dense outlined bg-color="white"
+                                                                    label="Nr."
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                        <q-input name="deliver_postcode" v-model="form.customer.deliver.postcode" lazy-rules dense outlined bg-color="white"
+                                                            label="PLZ"
+                                                        />
+
+                                                        <q-input name="deliver_city" v-model="form.customer.deliver.city" lazy-rules dense outlined bg-color="white"
+                                                            label="Ort"
+                                                        />
+
+                                                        <q-input name="deliver_country" v-model="form.customer.deliver.country" lazy-rules dense outlined bg-color="white"
+                                                            label="Land"
+                                                        />
+
+                                                        <q-input name="deliver_tel" v-model="form.customer.deliver.tel" lazy-rules dense outlined bg-color="white"
+                                                            label="Telefon"
+                                                        />
+
+                                                        <q-input name="payment_method" v-model="form.orderpayment.method" lazy-rules dense outlined bg-color="white"
+                                                            label="Zahlungsart"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="col-4">
-                                        <div class="text-h6">Lieferadresse</div>
+                                    <div class="col-3">
+                                        <div class="row q-col-gutter-sm">
+                                            <div class="col-12">
+                                                <div class="text-h6">Track</div>
+                                                <q-input name="track_amount" v-model="form.orderpos.track.amount" lazy-rules dense outlined bg-color="white"
+                                                    label="Anzahl"
+                                                />
+                                                <q-input name="track_gross" v-model="form.orderpos.track.price.gross" lazy-rules dense outlined bg-color="white"
+                                                    label="Brutto"
+                                                />
+                                                <q-input name="track_net" v-model="form.orderpos.track.price.net" lazy-rules dense outlined bg-color="white"
+                                                    label="Netto"
+                                                />
+                                            </div>
+                                        </div>
 
-                                        <q-input name="delivery_firstname" v-model="form.delivery.firstName" lazy-rules dense outlined bg-color="white"
-                                            label="Vorname"
-                                            hint=""
-                                        />
+                                        <q-separator class="q-my-md" />
 
-                                        <q-input name="delivery_surname" v-model="form.delivery.surname" lazy-rules dense outlined bg-color="white"
-                                            label="Nachname"
-                                            hint=""
-                                        />
+                                        <div class="row q-col-gutter-sm q-mt-md">
+                                            <div class="col-12">
+                                                <div class="text-h6">Turas</div>
+                                                <q-input name="turas_amount" v-model="form.orderpos.turas.amount" lazy-rules dense outlined bg-color="white"
+                                                    label="Anzahl"
+                                                />
+                                                <q-input name="turas_gross" v-model="form.orderpos.turas.pricegross" lazy-rules dense outlined bg-color="white"
+                                                    label="Brutto"
+                                                />
+                                                <q-input name="turas_net" v-model="form.orderpos.turas.pricenet" lazy-rules dense outlined bg-color="white"
+                                                    label="Netto"
+                                                />
+                                            </div>
+                                        </div>
 
-                                        <q-input name="delivery_firm" v-model="form.delivery.firm" lazy-rules dense outlined bg-color="white"
-                                            label="Firma"
-                                            hint=""
-                                        />
+                                        <q-separator class="q-my-md" />
 
-                                        <q-input name="delivery_street" v-model="form.delivery.street" lazy-rules dense outlined bg-color="white"
-                                            label="Straße"
-                                            hint=""
-                                        />
-
-                                        <q-input name="delivery_postcode" v-model="form.delivery.postcode" lazy-rules dense outlined bg-color="white"
-                                            label="PLZ"
-                                            hint=""
-                                        />
-
-                                        <q-input name="delivery_city" v-model="form.delivery.city" lazy-rules dense outlined bg-color="white"
-                                            label="Ort"
-                                            hint=""
-                                        />
-
-                                        <q-input name="delivery_country" v-model="form.delivery.country" lazy-rules dense outlined bg-color="white"
-                                            label="Land"
-                                            hint=""
-                                        />
-
-                                        <q-input name="payment_method" v-model="form.orderpayment.method" lazy-rules dense outlined bg-color="white"
-                                            label="Zahlungsart"
-                                            hint=""
-                                        />
+                                        <div class="row q-col-gutter-sm q-mt-md">
+                                            <div class="col-12">
+                                                <div class="text-h6">Gewährleistung</div>
+                                                <q-input name="warranty_amount" v-model="form.orderpos.warranty.amount" lazy-rules dense outlined bg-color="white"
+                                                    label="Anzahl"
+                                                />
+                                                <q-input name="warranty_gross" v-model="form.orderpos.warranty.price.gross" lazy-rules dense outlined bg-color="white"
+                                                    label="Brutto"
+                                                />
+                                                <q-input name="warranty_net" v-model="form.orderpos.warranty.price.net" lazy-rules dense outlined bg-color="white"
+                                                    label="Netto"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </q-card-section>
@@ -228,7 +343,6 @@ const init        = {
         Versandart:                 '0',
         Versandkosten:              0,
         Kunde:                      {
-            Anrede:                 '',
             Titel:                  '',
             Abteilung:              '',
             Telefax:                '',
@@ -237,42 +351,100 @@ const init        = {
             Privatperson:           '0',
             KeineMailings:          '0'
         },
-        customer:                   {
-            number:                 '',
-            firm:                   '',
-            firstName:              '',
-            surname:                '',
-            street:                 '',
-            postcode:               '',
-            city:                   '',
-            country:                '',
-            tel:                    '',
-            mail:                   ''
-        },
         LieferAdr:                  {
-            Anrede:                 '',
             Titel:                  '',
             Abteilung:              '',
             Telefon:                '',
             Telefon2:               '',
             Telefax:                ''
         },
-        delivery:                   {
-            surname:                '',
-            firstName:              '',
+        customer:                   {
+            number:                 '',
             firm:                   '',
+            salutation:            '',
+            firstName:              '',
+            surname:                '',
             street:                 '',
+            streetNumber:           '',
             postcode:               '',
             city:                   '',
-            country:                ''
+            country:                '',
+            tel:                    '',
+            mail:                   '',
+            vatidbuyer:             '',
+            deliver:                {
+                salutation:         '',
+                surname:            '',
+                firstName:          '',
+                firm:               '',
+                street:             '',
+                streetNumber:       '',
+                postcode:           '',
+                city:               '',
+                country:            '',
+                tel:                ''
+            }
         },
         orderpayment:               {
-            method:                 ''
+            REQUESTTOKEN:           '',
+            method:                 '',
+            returnPaypal:           '',
         },
         orderdata:                  {
-            ordernumber:            ''
+            ordernumber:            '',
+            maker:                  '',
+            size:                   '',
+            type:                   '',
+            price: {
+                gross:              0,
+                net:                0
+            }
         },
-        orderpos:                   [],
+        orderinfo:                    {
+            caller:                 '',
+            deliver:                {
+                billing:                   '',
+            },
+            delivery:               {
+                days:                      '',
+            },
+            gad:                    '',
+            gclid:                  '',
+            marker:                 {
+                bestPriceWeCan:         '',
+                hasUserPhotos:          '',
+                isMarketBestPrice:      '',
+            },
+            utm:                    {
+                source:                 '',
+                medium:                 '',
+                campaign:               '',
+                term:                   '',
+            },
+        },
+        orderpos:                   {
+            track: {
+                amount:                 0,
+                price:                  {
+                    gross:              0,
+                    net:                0,
+                },
+            },
+            turas:             {
+                amount:                 0,
+                description:            '',
+                pricegross:             0,
+                pricenet:               0,
+            },
+            warranty:          {
+                amount:                 0,
+                select:                 '',
+                price:                  {
+                    gross:                  0,
+                    net:                    0,
+                },
+            },
+        },
         InternesMemo:               '',
         Schlusstext:                '',
         BestText:                   ''
@@ -328,8 +500,7 @@ const   frameworkComponents    = {
         stateList     = Status(),
         send          = Send();
 
-const   tab           = ref('contact'),
-        uploader      = ref( null ),
+const   uploader      = ref( null ),
         links         = ref([]),
         showLink      = ref(false),
         orderButtons   = ref([
@@ -344,6 +515,11 @@ const   tab           = ref('contact'),
                 label:      'Senden',
                 link:       'sendOrder',
                 icon:       'fas fa-paper-plane'
+            },
+            {
+                label:      'Abrufen',
+                link:       'getOrder',
+                icon:       'fas fa-download'
             }
         ]),
         showGrid      = ref(false),
@@ -409,6 +585,21 @@ function clickButton( link: string ) {
 
             sendOrder( form.value );
             break;
+
+        case 'getOrder':
+            if (!form.value._id) {
+                Notify.create({
+                    message:        t('messages.TextNoRecord'),
+                    color:          'negative',
+                    icon:           'report_problem',
+                    position:       'top-right',
+                    timeout:        3000
+                });
+                return;
+            }
+
+            getOrder( form.value );
+            break;
     }
 }
 
@@ -435,6 +626,40 @@ async function sendOrder( data: any ) {
             || (typeof err.response?.data === 'string' ? err.response.data : null)
             || err.message
             || 'Fehler beim Senden';
+
+        Notify.create({
+            message:        errorMsg,
+            color:          'negative',
+            icon:           'report_problem',
+            position:       'top-right',
+            timeout:        5000
+        });
+    }
+}
+
+async function getOrder( data: any ) {
+    log( 'getOrder', data._id );
+
+    try {
+        const resp = await axios.post( '/custom/getOrder/getorder.json', { _id: data._id } );
+        log( 'getOrder response', resp.data );
+
+        Notify.create({
+            message:        'Auftrag wurde abgerufen',
+            color:          'green-9',
+            icon:           'done',
+            position:       'top-right',
+            timeout:        2000
+        });
+    }
+    catch( err: any ) {
+        log( 'getOrder error', err );
+
+        const errorMsg = err.response?.data?.message
+            || err.response?.data?.error
+            || (typeof err.response?.data === 'string' ? err.response.data : null)
+            || err.message
+            || 'Fehler beim Abrufen';
 
         Notify.create({
             message:        errorMsg,

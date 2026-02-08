@@ -70,7 +70,7 @@ export default function globalView( { collName, stateName, defaultForm = {} }: {
             await store.dispatchAction( { action: 'afterSave', param: form.value } );
         }
         catch( error ) {
-            form.value     = { ...defaultForm };
+            log( 'doSave error', error );
         }
     }
 

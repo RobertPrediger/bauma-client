@@ -59,7 +59,7 @@ function update( { coll, body, action, socket }: { coll: string, body: any, acti
             } else if (res.data && !res.data.ok) {
                 return reject( res.data.lastErrorObject );
             }
-            resolve( res.data.value );
+            resolve( res.data );
         } );
     });
 }
