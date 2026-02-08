@@ -1,9 +1,0 @@
-
-.grid[data-v-7fdd053e] {
-    height: 300px;
-}
-.form[data-v-7fdd053e] {
-    height:    calc( 100vh - 300px - 95px - 70px );
-    width:         100%;
-}
-

@@ -1,9 +1,0 @@
-.detailWindow[data-v-204bd38a] {
-  width: calc(100vw - 130px);
-  max-width: calc(100vw - 130px) !important;
-  height: calc(100vh - 100px);
-  background-color: white;
-}
-.lead-list[data-v-204bd38a] {
-  height: calc(100vh - 100px - 50px - 50px - 50px);
-}
