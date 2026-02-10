@@ -486,7 +486,8 @@ const   frameworkComponents    = {
         send          = Send();
 
 const   uploader      = ref( null ),
-        links         = ref([]),
+        gridApi       = ref<any>( null ),
+        links         = ref([] as any[]),
         showLink      = ref(false),
         orderButtons   = ref([
             {
@@ -542,6 +543,8 @@ function subGridReady( { gridOpt }: { gridOpt: any } ) {
     gridOpt.context    = {
         stateList:              _.keyBy( stateList, 'value' ),
     };
+    // Save grid API for later use
+    gridApi.value = gridOpt.api;
 }
 
 function clickButton( link: string ) {
@@ -601,6 +604,12 @@ async function sendOrder( data: any ) {
         const resp = await axios.post( '/custom/sendOrder/sendorder.json', { _id: data._id } );
         log( 'sendOrder response', resp.data );
 
+        // Reload order data from server
+        await orderStore.setRecord( { _id: data._id } );
+
+        // Refresh grid data
+        gridApi.value?.refreshServerSide({ purge: true });
+
         Notify.create({
             message:        'Auftrag wurde gesendet',
             color:          'green-9',
@@ -634,6 +643,12 @@ async function getOrder( data: any ) {
     try {
         const resp = await axios.post( '/custom/getOrder/getorder.json', { _id: data._id } );
         log( 'getOrder response', resp.data );
+
+        // Reload order data from server
+        await orderStore.setRecord( { _id: data._id } );
+
+        // Refresh grid data
+        gridApi.value?.refreshServerSide({ purge: true });
 
         Notify.create({
             message:        'Auftrag wurde abgerufen',
